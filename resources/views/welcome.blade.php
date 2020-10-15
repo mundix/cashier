@@ -19,6 +19,7 @@
         <div class="absolute top-0 right-0 mt-4 mr-4 space-x-4 sm:mt-6 sm:mr-6 sm:space-x-6">
             @auth
                 <a href="{{ url('/home') }}" class="no-underline hover:underline text-sm font-normal text-teal-800 uppercase">{{ __('Home') }}</a>
+                <a href="{{ route('billing') }}" class="no-underline hover:underline text-sm font-normal text-teal-800 uppercase">{{ __('Billing') }}</a>
             @else
                 <a href="{{ route('login') }}" class="no-underline hover:underline text-sm font-normal text-teal-800 uppercase">{{ __('Login') }}</a>
                 @if (Route::has('register'))

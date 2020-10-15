@@ -11,7 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    
+
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
@@ -33,6 +33,7 @@
                     @else
                         <span>{{ Auth::user()->name }}</span>
 
+                        <a href="{{ route('billing') }}" class="no-underline hover:underline">{{ __('Billing') }}</a>
                         <a href="{{ route('logout') }}"
                            class="no-underline hover:underline"
                            onclick="event.preventDefault();
