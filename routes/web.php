@@ -20,5 +20,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('billing', [\App\Http\Controllers\BillingController::class, 'index'])->name('billing');
+Route::group(['middleware' => 'auth'], function(){
+    Route::get('billing', [\App\Http\Controllers\BillingController::class, 'index'])->name('billing');
+    Route::get('checkout/{plan_id}', [\App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
+
+});
 
