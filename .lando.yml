@@ -1,0 +1,104 @@
+name: cashier
+recipe: lemp
+env_file:
+  - .env
+
+keys:
+  - id_rsa
+
+config:
+  php: '7.4'
+  via: nginx
+  database: mysql
+  xdebug: true
+  webroot: public
+  config:
+    php: .lando/php.ini
+    vhosts: .lando/nginx.conf
+    database: .lando/mysql.conf
+
+services:
+  appserver:
+    overrides:
+      environment:
+        # Support debugging with XDEBUG.
+        PHP_IDE_CONFIG: "serverName=appserver"
+
+  cache:
+    type: redis
+    portforward: true
+
+  node:
+    type: node:13
+    globals:
+      yarn: latest
+    ports:
+      - 4004:4004
+
+  database:
+    portforward: 3317
+
+  mailhog:
+    type: mailhog
+    hogfrom:
+      - appserver
+#
+#  pma:
+#    type: phpmyadmin
+#    hosts:
+#      - database
+
+proxy:
+  mailhog:
+    - mailhog.lndo.site
+#  pma:
+#    - pma.lndo.site
+
+tooling:
+  yarn:
+    service: node
+
+  redis-cli:
+    service: cache
+
+  artisan:
+    service: appserver
+    cmd: php artisan
+
+  install-deps:
+    service: appserver
+    cmd:
+      - echo "Installing laravel..."
+      - cp .env.example .env
+      - composer install --no-interaction --prefer-dist --optimize-autoloader
+      - php artisan down
+      - php artisan key:generate
+      - php artisan config:cache
+      - php artisan migrate
+      - php artisan storage:link
+      - composer dump-autoload
+      - php artisan migrate:fresh --seed
+      - php artisan ide-helper:generate
+      - php artisan optimize
+      - php artisan up
+      - node: yarn install
+      - echo "Laravel project installed successfully!!!"
+    description: 'Install project dependencies.'
+
+  clean-deps:
+    service: appserver
+    cmd:
+      - rm -rf /app/vendor
+      - find . -name "node_modules" -exec rm -rf '{}' +
+
+  xdon: # xdebug on
+    service: appserver
+    description: Enable xdebug for nginx.
+    cmd: docker-php-ext-enable xdebug && pkill -o -USR2 php-fpm
+    user: root
+
+  xdoff: # xdebug off
+    service: appserver
+    description: Disable xdebug for nginx.
+    cmd: rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm
+    user: root
