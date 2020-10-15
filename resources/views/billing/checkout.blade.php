@@ -18,7 +18,18 @@
 
             <div class="w-full p-6">
                 <div class="flex mb-4 -mx-2">
-                    Payment from will be here
+                    <form action="{{route('checkout.process')}}" method='POST'>
+                        @csrf
+                        <input type="hidden" name='billing_plan_id' value="{{$plan->id}}">
+                        {{-- The stripe part copy and paste from the laravel stripe form part --}}
+                        <input id="card-holder-name" type="text">
+                        <!-- Stripe Elements Placeholder -->
+                        <div id="card-element"></div> <!-- this fill with dynamic js -->
+
+                        <button id="card-button" data-secret="{{ $intent->client_secret  }}">
+                            Pay ${{number_format($plan->price/100, 2)}}
+                        </button>
+                    </form>
             </div>
             </div>
         </section>

@@ -23,6 +23,7 @@ Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->nam
 Route::group(['middleware' => 'auth'], function(){
     Route::get('billing', [\App\Http\Controllers\BillingController::class, 'index'])->name('billing');
     Route::get('checkout/{plan_id}', [\App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
+    Route::post('checkout', [\App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
 
 });
 
