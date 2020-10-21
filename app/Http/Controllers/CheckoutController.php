@@ -21,7 +21,7 @@ class CheckoutController extends Controller
 		$plan = Plan::findOrFail($request->input('billing_plan_id'));
 		//stripe_plan_id => prod_IF7cjHqkjlYIHK on the db
 		try {
-			$user->newSubscription($plan->name, $plan->strip_plan_id)->create($request->input('payment-method'));
+			$user->newSubscription($plan->name, $plan->stripe_plan_id)->create($request->input('payment-method'));
 			return redirect()->route('billing')->with('success', 'Suscribe successfully');
 		}catch (\Exception $e) {
 			return redirect()->back()->withErrors($e->getMessage());
