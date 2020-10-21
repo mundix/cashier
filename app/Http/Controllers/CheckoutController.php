@@ -14,8 +14,8 @@ class CheckoutController extends Controller
         return view('billing.checkout', compact('plan', 'intent'));
     }
 
-    public function processCheckout()
+    public function processCheckout(Request $request)
     {
-
+		return $request->all();
     }
 }
