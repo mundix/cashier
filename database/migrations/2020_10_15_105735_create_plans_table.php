@@ -15,9 +15,11 @@ class CreatePlansTable extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->integer('price'); //saving the prices not in float, povilas explain why in integer
-            $table->string('stripe_plan_id')->nullable();
+	        $table->string('name');
+	        $table->string('slug')->unique();
+	        $table->string('stripe_plan');
+	        $table->float('price');
+	        $table->text('description')->nullable();
             $table->timestamps();
         });
     }

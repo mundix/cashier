@@ -14,17 +14,26 @@ class CheckoutController extends Controller
 		return view('billing.checkout', compact('plan', 'intent'));
 	}
 
+	/**
+	 * This works 100% User subscriptions with a plan Monthly
+	 * @param POST billing_plan_id  (This plan id is the plan of local db
+	 *
+	*/
 	public function processCheckout(Request $request)
 	{
-//		return $request->all();
-		$user = auth()->user();
-		$plan = Plan::findOrFail($request->input('billing_plan_id'));
-		//stripe_plan_id => prod_IF7cjHqkjlYIHK on the db
-		try {
-			$user->newSubscription($plan->name, $plan->stripe_plan_id)->create($request->input('payment-method'));
-			return redirect()->route('billing')->with('success', 'Suscribe successfully');
-		}catch (\Exception $e) {
-			return redirect()->back()->withErrors($e->getMessage());
-		}
+		$plan = Plan::findOrFail($request->get('billing_plan_id'));
+
+		$user = $request->user();
+		$paymentMethod = $request->input('payment-method');
+
+		$user->createOrGetStripeCustomer();
+		$user->updateDefaultPaymentMethod($paymentMethod);
+		$response  = $user->newSubscription('default', $plan->stripe_plan)
+			->create($paymentMethod, [
+				'email' => $user->email,
+			]);
+		dd($response);
+//		return redirect()->route('home')->with('success', 'Your plan subscribed successfully');
+
 	}
 }

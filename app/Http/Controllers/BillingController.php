@@ -11,6 +11,7 @@ class BillingController extends Controller
     public function index()
     {
         $plans = Plan::all();
-        return view('billing.index', compact('plans'));
+	    $currentPlan = null;
+        return view('billing.index', compact('plans', 'currentPlan'));
     }
 }
