@@ -24,6 +24,14 @@ class CheckoutController extends Controller
 		$plan = Plan::findOrFail($request->get('billing_plan_id'));
 
 		$user = $request->user();
+
+		# Canceled Previous Subscription
+		if($user->subscription('default')->active())
+		{
+			$invoices = $user->invoices();
+			dd($invoices);
+		}
+
 		$paymentMethod = $request->input('payment-method');
 
 		$user->createOrGetStripeCustomer();

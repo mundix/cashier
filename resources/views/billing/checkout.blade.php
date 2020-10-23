@@ -29,7 +29,7 @@
                                         <br />
 
                                         <button id="card-button" class="btn btn-primary">
-                                            Pay ${{number_format(($plan->price)/100, 2)}}
+                                            Pay ${{number_format(($plan->price), 2)}}
                                         </button>
 
                                     </div>
